@@ -21,11 +21,12 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: 'app/index.html'
+        }),
+        new CopyPlugin({
+            patterns: [
+                { from: 'app/_redirects' }
+            ]
         })
-        // ,
-        // new CopyPlugin([
-        //     { from: '_redirects' }
-        // ])
     ],
     // for ReactRouter to redirect
     devServer: {
