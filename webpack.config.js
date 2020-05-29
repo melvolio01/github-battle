@@ -1,5 +1,5 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
@@ -7,13 +7,11 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'index_bundle.js',
-        // fallback for React-router history API
         publicPath: '/'
     },
     module: {
         rules: [
             { test: /\.(js)$/, use: 'babel-loader' },
-            { test: /\.(jsx)$/, use: 'babel-loader' },
             { test: /\.css$/, use: ['style-loader', 'css-loader'] }
         ]
     },
@@ -24,11 +22,10 @@ module.exports = {
         }),
         new CopyPlugin({
             patterns: [
-                { from: 'app/_redirects' }
+                { from: 'app' }
             ]
         })
     ],
-    // for ReactRouter to redirect
     devServer: {
         historyApiFallback: true
     }
