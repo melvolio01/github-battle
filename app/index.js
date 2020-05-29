@@ -23,13 +23,6 @@ class App extends React.Component {
     }
 
     render() {
-        const updatePage = (page) => {
-            this.setState({
-                page
-            })
-        }
-
-        const { page } = this.state;
         return (
             <Router >
                 <ThemeProvider value={this.state}>
