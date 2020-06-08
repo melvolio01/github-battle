@@ -6,10 +6,10 @@ const activeStyle = {
     color: '#63b7af'
 }
 
-const Header = () => {
+const Header = ({toggleTheme}) => {
     return (
         <ThemeConsumer>
-            {({ theme, toggleTheme }) => (
+            {({ theme }) => (
                 <nav className="row space-between">
                     <ul className="row nav-link">
                         <li><NavLink exact to="/"
