@@ -1,85 +1,80 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useReducer, useEffect } from 'react';
 import { battle } from '../utils/api';
 import ResultsCard from './ResultsCard';
 import ResultsCardList from './ResultsCardList';
-import { FaCompass, FaBriefcase, FaUser, FaUserFriends, FaCode, FaUsers } from 'react-icons/fa';
-import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import { Link } from 'react-router-dom';
 
-class Results extends Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            winner: null,
-            loser: null,
-            error: null,
-            loading: true
-        }
+const battleReducer = (state, action) => {
+    switch (action.type) {
+        case ('success'):
+            return {
+                winner: action.winner,
+                loser: action.loser,
+                error: null,
+                loading: false
+            }
+        case ('error'):
+            return {
+                ...state,
+                error: action.message,
+                loading: false
+            }
+        default:
+            throw new Error('That actiontype is not supported')
     }
+}
 
-    componentDidMount() {
-        console.log(this.props)
-        const { playerOne, playerTwo } = queryString.parse(this.props.location.search)
+const Results = ({ location }) => {
+    const { playerOne, playerTwo } = queryString.parse(location.search)
+    const [state, dispatch] = useReducer(battleReducer, {
+        winner: null, loser: null, error: null, loading: true
+    })
+
+    useEffect(() => {
         battle([playerOne, playerTwo])
-            .then((players) => {
-                this.setState({
-                    winner: players[0],
-                    loser: players[1],
-                    error: null,
-                    loading: false
-                }, () => console.log(players))
-            }).catch(({ message }) => {
-                this.setState({
-                    error: message,
-                    loading: false
-                })
-            })
+            .then((players) => dispatch({ type: 'success', winner: players[0], loser: players[1] }))
+            .catch(({ message }) => dispatch({ type: 'error', message }))
+    }, [playerOne, playerTwo])
 
+    const { winner, loser, error, loading } = state;
+    if (loading) {
+        return <div className="loader"></div>
     }
 
-    render() {
-        const { winner, loser, error, loading } = this.state;
-        if (loading) {
-            return <div className="loader"></div>
-        }
+    if (error) {
+        return <p className="center-text error">{error}</p>
+    }
 
-        if (error) {
-            return <p className="center-text error">{error}</p>
-        }
+    return (
+        <Fragment>
+            <div className="grid container-small space-around">
 
-        return (
-            <Fragment>
-                <div className="grid container-small space-around">
-
-                    <ResultsCard
-                        header={winner.score === loser.score ? 'Tie' : 'Winner'}
-                        subheader={`Score: ${winner.score.toLocaleString()}`}
-                        avatar={winner.profile.avatar_url}
-                        href={winner.profile.html_url}
-                        name={winner.profile.login}>
-                        <ResultsCardList player={winner} />
-                    </ResultsCard>
-                    <ResultsCard
-                        header={winner.score === loser.score ? 'Tie' : 'Loser'}
-                        subheader={`Score: ${loser.score.toLocaleString()}`}
-                        avatar={loser.profile.avatar_url}
-                        href={loser.profile.html_url}
-                        name={loser.profile.login}
-                    >
-                        <ResultsCardList player={loser} />
-                    </ResultsCard>
-                </div>
-                <Link
-                    to="/battle"
-                    className="dark-btn btn btn-space"
+                <ResultsCard
+                    header={winner.score === loser.score ? 'Tie' : 'Winner'}
+                    subheader={`Score: ${winner.score.toLocaleString()}`}
+                    avatar={winner.profile.avatar_url}
+                    href={winner.profile.html_url}
+                    name={winner.profile.login}>
+                    <ResultsCardList player={winner} />
+                </ResultsCard>
+                <ResultsCard
+                    header={winner.score === loser.score ? 'Tie' : 'Loser'}
+                    subheader={`Score: ${loser.score.toLocaleString()}`}
+                    avatar={loser.profile.avatar_url}
+                    href={loser.profile.html_url}
+                    name={loser.profile.login}
                 >
-                    Reset</Link>
-            </Fragment>
-        );
-
-    }
+                    <ResultsCardList player={loser} />
+                </ResultsCard>
+            </div>
+            <Link
+                to="/battle"
+                className="dark-btn btn btn-space"
+            >
+                Reset</Link>
+        </Fragment>
+    );
 }
 
 export default Results;
