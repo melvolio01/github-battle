@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 const ResultsCard = ({ header, subheader, avatar, href, name, children }) => {
     return (
-        // <div className="grid container-small space-around">
         <div className="card bg-light">
             <h4 className="header-lg center-text">
                 {header}

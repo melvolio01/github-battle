@@ -48,14 +48,6 @@ const ReposGrid = ({ repos }) => {
     );
 };
 
-{/* <li>
-<Tooltip text="User's Company">
-    <FaBriefcase color="#795548" size={22}
-    />
-    {player.profile.company}
-</Tooltip>
-</li> */}
-
 ReposGrid.propTypes = {
     repos: PropTypes.array.isRequired
 }

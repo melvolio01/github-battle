@@ -1,6 +1,7 @@
 import React, { createContext } from 'react';
 
-const { Consumer, Provider } = createContext();
+const ThemeContext = createContext();
 
-export const ThemeConsumer = Consumer;
-export const ThemeProvider = Provider;
+export default ThemeContext
+export const ThemeConsumer = ThemeContext.Consumer;
+export const ThemeProvider = ThemeContext.Provider;
